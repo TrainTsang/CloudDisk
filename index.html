@@ -28,23 +28,33 @@
 </div>
 <script>
     $(function () {
-        window.urlHistory = [''];
-        getList('');
+        $.getUrlParam = function (name) {
+            var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
+            var r = window.location.search.substr(1).match(reg);
+            if (r !== null) return decodeURIComponent(r[2]); return null;
+        };
+        window.gopage=$.getUrlParam('gopage');
+        console.log(gopage);
 
-        $('body').on('touchend click', '.dirclick', function () {
-            var aa = $(this).data('did');
-            console.log(aa);
-            urlHistory.push(aa);
-            getList(aa);
-        });
+        window.urlHistory = [''];
+        if(gopage !== null){
+            getList(gopage);
+        }else{
+            getList('');
+        }
+
+
+
 
         $('body').on('touchend click', '.back', function () {
-            urlHistory.pop();
-            var url = urlHistory[urlHistory.length - 1];
-            console.log(url);
-            getList(url);
-        })
+
+            history.go(-1);
+        });
+
+
     });
+
+
 
     function getList(dir) {
         $.ajax({
@@ -61,7 +71,6 @@
                 });
             },
             success: function (data) {
-                console.log(data);
                 var html = '';
 
                 if (dir == '') {
@@ -83,26 +92,21 @@
                 }
                 if (data.CountNum === 0) {
                 } else {
-                    var cl = '';
-                    var did = '';
                     var icon = '';
                     var ahtml = '';
                     for (var i = 0; i < data.CountNum; i++) {
 
                         if (data.List[i].type === 'file') {
                             icon = 'file.png';
-                            cl = '';
-                            did = '';
                             ahtml = './' + data.List[i].dirtext2;
                         } else {
                             icon = 'dir.png';
-                            cl = 'dirclick';
-                            did = 'data-did="' + data.List[i].dirtext + '"';
-                            ahtml = 'javascript:;'
+                            //ahtml = 'javascript:;'
+                            ahtml = './?gopage='+encodeURIComponent(data.List[i].dirtext);
                         }
 
 
-                        html = html + '<a class="weui-cell weui-cell_access ' + cl + '" href="' + ahtml + '" ' + did + '>' +
+                        html = html + '<a class="weui-cell weui-cell_access" href="' + ahtml + '">' +
                             '    <div class="weui-cell__hd"><img src="' + icon + '" alt="" style="width:20px;margin-right:5px;display:block"></div>' +
                             '    <div class="weui-cell__bd">' +
                             '        <p>' + data.List[i].filename + '</p>' +
