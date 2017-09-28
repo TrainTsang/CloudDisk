@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no"/>
+    <title>黑豹文件系统</title>
+    <link rel="stylesheet" href="https://res.wx.qq.com/open/libs/weui/1.1.1/weui.min.css"/>
+    <script type="text/javascript" src="http://apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js" charset="utf-8"></script>
+    <script type="text/javascript" src="https://res.wx.qq.com/open/libs/weuijs/1.1.1/weui.min.js"></script>
+</head>
+<body>
+<div class="weui-cells" id="main">
+    <!--<div class="weui-cell">-->
+    <!--<div class="weui-cell__hd"><img src="..." alt="" style="width:20px;margin-right:5px;display:block"></div>-->
+    <!--<div class="weui-cell__bd">-->
+    <!--<p>标题文字</p>-->
+    <!--</div>-->
+    <!--<div class="weui-cell__ft">说明文字</div>-->
+    <!--</div>-->
+    <!--<a class="weui-cell weui-cell_access" href="javascript:;">-->
+    <!--<div class="weui-cell__hd"><img src="..." alt="" style="width:20px;margin-right:5px;display:block"></div>-->
+    <!--<div class="weui-cell__bd">-->
+    <!--<p>cell standard</p>-->
+    <!--</div>-->
+    <!--<div class="weui-cell__ft">说明文字</div>-->
+    <!--</a>-->
+</div>
+<script>
+    $(function () {
+        window.urlHistory = [''];
+        getList('');
+
+        $('body').on('touchend click', '.dirclick', function () {
+            var aa = $(this).data('did');
+            console.log(aa);
+            urlHistory.push(aa);
+            getList(aa);
+        });
+
+        $('body').on('touchend click', '.back', function () {
+            urlHistory.pop();
+            var url = urlHistory[urlHistory.length - 1];
+            console.log(url);
+            getList(url);
+        })
+    });
+
+    function getList(dir) {
+        $.ajax({
+            type: "POST",
+            url: "ajax.php",
+            data: {
+                'dir': dir
+            },
+            async: true,
+            dataType: "json",
+            beforeSend: function () {
+                window.loadingInit = weui.loading('正在加载', {
+                    className: 'custom-classname'
+                });
+            },
+            success: function (data) {
+                console.log(data);
+                var html = '';
+
+                if (dir == '') {
+                    html = "<div class=\"weui-cell\">" +
+                        "<div class=\"weui-cell__hd\"><img src=\"back.png\" alt=\"\" style=\"width:20px;margin-right:5px;display:block\"></div>" +
+                        "<div class=\"weui-cell__bd\">" +
+                        "<p>根目录</p>" +
+                        "</div>" +
+                        "<div class=\"weui-cell__ft\"></div>" +
+                        "</div>";
+                } else {
+                    html = "<div class=\"weui-cell back\">" +
+                        "<div class=\"weui-cell__hd\"><img src=\"back.png\" alt=\"\" style=\"width:20px;margin-right:5px;display:block\"></div>" +
+                        "<div class=\"weui-cell__bd\">" +
+                        "<p>返回上级</p>" +
+                        "</div>" +
+                        "<div class=\"weui-cell__ft\"></div>" +
+                        "</div>";
+                }
+                if (data.CountNum === 0) {
+                } else {
+                    var cl = '';
+                    var did = '';
+                    var icon = '';
+                    var ahtml = '';
+                    for (var i = 0; i < data.CountNum; i++) {
+
+                        if (data.List[i].type === 'file') {
+                            icon = 'file.png';
+                            cl = '';
+                            did = '';
+                            ahtml = './' + data.List[i].dirtext2;
+                        } else {
+                            icon = 'dir.png';
+                            cl = 'dirclick';
+                            did = 'data-did="' + data.List[i].dirtext + '"';
+                            ahtml = 'javascript:;'
+                        }
+
+
+                        html = html + '<a class="weui-cell weui-cell_access ' + cl + '" href="' + ahtml + '" ' + did + '>' +
+                            '    <div class="weui-cell__hd"><img src="' + icon + '" alt="" style="width:20px;margin-right:5px;display:block"></div>' +
+                            '    <div class="weui-cell__bd">' +
+                            '        <p>' + data.List[i].filename + '</p>' +
+                            '    </div>' +
+                            '    <div class="weui-cell__ft"></div>' +
+                            '</a>';
+                    }
+                }
+                $('#main').html(html);
+            },
+            complete: function () {
+                loadingInit.hide();
+            },
+            error: function () {
+                alert("网络繁忙，请稍后再试！");
+            }
+
+        });
+    }
+</script>
+</body>
+</html>
