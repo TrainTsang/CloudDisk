@@ -75,7 +75,7 @@
 
                 if (dir == '') {
                     html = "<div class=\"weui-cell\">" +
-                        "<div class=\"weui-cell__hd\"><img src=\"home.png\" alt=\"\" style=\"width:20px;margin-right:5px;display:block\"></div>" +
+                        "<div class=\"weui-cell__hd\"><img src=\"config/home.png\" alt=\"\" style=\"width:20px;margin-right:5px;display:block\"></div>" +
                         "<div class=\"weui-cell__bd\">" +
                         "<p>根目录</p>" +
                         "</div>" +
@@ -83,7 +83,7 @@
                         "</div>";
                 } else {
                     html = "<div class=\"weui-cell back\">" +
-                        "<div class=\"weui-cell__hd\"><img src=\"back.png\" alt=\"\" style=\"width:20px;margin-right:5px;display:block\"></div>" +
+                        "<div class=\"weui-cell__hd\"><img src=\"config/back.png\" alt=\"\" style=\"width:20px;margin-right:5px;display:block\"></div>" +
                         "<div class=\"weui-cell__bd\">" +
                         "<p>返回上级</p>" +
                         "</div>" +
@@ -97,10 +97,10 @@
                     for (var i = 0; i < data.CountNum; i++) {
 
                         if (data.List[i].type === 'file') {
-                            icon = 'file.png';
+                            icon = 'config/file.png';
                             ahtml = './' + data.List[i].dirtext2;
                         } else {
-                            icon = 'dir.png';
+                            icon = 'config/dir.png';
                             //ahtml = 'javascript:;'
                             ahtml = './?gopage='+encodeURIComponent(data.List[i].dirtext);
                         }

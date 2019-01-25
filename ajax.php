@@ -14,7 +14,7 @@ function getfiles($path)
     $file = [];
     $tmp = [];
     foreach (scandir($path) as $afile) {
-        if ($afile == '.' || $afile == '..' || $afile == '.idea' || strpos($afile, '.php') || strpos($afile, '.html')) continue;//这里可以吧要过滤的文件写上
+        if ($afile == '.' || $afile == '..' || $afile == '.idea'||$afile == 'config' || strpos($afile, '.php') || strpos($afile, '.html')) continue;//这里可以吧要过滤的文件写上
         if (is_dir($path . '/' . $afile)) {
             $tmp['type'] = 'dir';
         } else if (is_file($path . '/' . $afile)) {
